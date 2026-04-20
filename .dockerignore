@@ -1,0 +1,27 @@
+# Git
+.git
+.gitignore
+
+# Maven / build
+target/*.jar
+target/*.war
+target/*.log
+target/surefire-reports/
+
+# IDE
+.vscode
+.idea
+*.iml
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# Env files (important)
+.env
+
+# Docker (optionnel)
+Dockerfile
+docker-compose.yml
