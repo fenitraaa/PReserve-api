@@ -1,4 +1,4 @@
-package com.eni.preserve.entity;
+/* package com.eni.preserve.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -16,3 +16,4 @@ import lombok.Setter;
 public class Place {
 
 }
+ */
