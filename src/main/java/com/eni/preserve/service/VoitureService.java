@@ -48,10 +48,6 @@ public class VoitureService {
         Voiture updated = voitureRepository.save(existing);
         return voitureMapper.toDTO(updated);
     }
-
-    public void delete(Long id) {
-        voitureRepository.deleteById(id);
-    }
     
     public int getPlacesLibres(Long id) {
         Voiture v = voitureRepository.findById(id)

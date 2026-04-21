@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:16
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: coop_reservation
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    image: ghcr.io/fenitraaa/preserve-api:latest
+    container_name: preserve_app
+    depends_on:
+      - db
+    ports:
+      - "8084:8080"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/coop_reservation
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+ 
+volumes:
+  postgres_data:

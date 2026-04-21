@@ -46,12 +46,6 @@ public class VoitureController {
         return ResponseEntity.ok(voitureService.update(id, dto));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        voitureService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/{id}/places-libres")
     public ResponseEntity<Integer> getPlacesLibres(@PathVariable Long id) {
         int placesLibres = voitureService.getPlacesLibres(id);
