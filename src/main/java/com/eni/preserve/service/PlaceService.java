@@ -1,6 +1,7 @@
 package com.eni.preserve.service;
 
 import com.eni.preserve.entity.Place;
+import com.eni.preserve.entity.PlaceId;
 import com.eni.preserve.entity.Voiture;
 import com.eni.preserve.repository.PlaceRepository;
 import com.eni.preserve.repository.VoitureRepository;
@@ -20,9 +21,10 @@ public class PlaceService {
         Voiture voiture = voitureRepository.findById(idvoit)
                 .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
 
+        PlaceId placeId = new PlaceId(idvoit, numeroPlace);
         Place place = new Place();
         place.setVoiture(voiture);
-        place.setPlace(numeroPlace);
+        place.setId(placeId);
         place.setOccupation(false);
 
         return placeRepository.save(place);
@@ -56,7 +58,7 @@ public class PlaceService {
         Voiture voiture = voitureRepository.findById(idvoit)
                 .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
 
-        Place place = placeRepository.findByVoitureAndPlace(voiture, numeroPlace)
+        Place place = placeRepository.findByVoitureAndIdPlace(voiture, numeroPlace)
                 .orElseThrow(() -> new RuntimeException("Place introuvable"));
 
         if (place.isOccupation()) {
@@ -71,7 +73,7 @@ public class PlaceService {
         Voiture voiture = voitureRepository.findById(idvoit)
                 .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
 
-        Place place = placeRepository.findByVoitureAndPlace(voiture, numeroPlace)
+        Place place = placeRepository.findByVoitureAndIdPlace(voiture, numeroPlace)
                 .orElseThrow(() -> new RuntimeException("Place introuvable"));
 
         if (!place.isOccupation()) {
