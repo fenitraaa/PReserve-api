@@ -2,12 +2,6 @@
 .git
 .gitignore
 
-# Maven / build
-target/*.jar
-target/*.war
-target/*.log
-target/surefire-reports/
-
 # IDE
 .vscode
 .idea
