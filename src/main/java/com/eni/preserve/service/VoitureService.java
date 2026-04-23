@@ -3,6 +3,7 @@ package com.eni.preserve.service;
 import com.eni.preserve.dto.VoitureDTO;
 import com.eni.preserve.entity.Voiture;
 import com.eni.preserve.mapper.VoitureMapper;
+import com.eni.preserve.repository.PlaceRepository;
 import com.eni.preserve.repository.VoitureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class VoitureService {
 
     private final VoitureRepository voitureRepository;
     private final VoitureMapper voitureMapper;
+    private final PlaceRepository placeRepository;
 
 
     public VoitureDTO create(VoitureDTO dto) {
@@ -52,6 +54,6 @@ public class VoitureService {
     public int getPlacesLibres(Long id) {
         Voiture v = voitureRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
-        return v.getNbrplace();
+        return (int) placeRepository.findByVoitureAndOccupation(v, false).size();
     }
 }
