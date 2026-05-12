@@ -1,0 +1,46 @@
+package com.eni.preserve.entity;
+
+import com.eni.preserve.enums.TypePaiement;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "reserver")
+public class Reserver {
+
+    @Id
+    @Column(name = "idreserv")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idreserv;
+
+    @ManyToOne
+    @JoinColumn(name = "idvoit", nullable = false)
+    private Voiture voiture;
+
+    @ManyToOne
+    @JoinColumn(name = "idcli", nullable = false)
+    private Client client;
+
+    @Column(name = "place", nullable = false)
+    private int place;
+
+    @Column(name = "date_reserv", nullable = false)
+    private LocalDateTime dateReserv;
+
+    @Column(name = "date_voyage", nullable = false)
+    private LocalDate dateVoyage;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment", nullable = false)
+    private TypePaiement payment;
+
+    @Column(name = "montant_avance")
+    private int montantAvance;
+}
