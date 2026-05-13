@@ -53,30 +53,6 @@ class PlaceServiceTest {
     }
 
     @Test
-    void testCreate() {
-        when(voitureRepository.findById(1L)).thenReturn(Optional.of(voiture));
-        when(placeRepository.save(any(Place.class))).thenReturn(place);
-
-        Place result = placeService.create(1L, 1);
-
-        assertThat(result).isNotNull();
-        assertThat(result.isOccupation()).isFalse();
-        assertThat(result.getId()).isEqualTo(placeId);
-        verify(placeRepository).save(any(Place.class));
-    }
-
-    @Test
-    void testCreateVoitureIntrouvable() {
-        when(voitureRepository.findById(99L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> placeService.create(99L, 1))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Voiture introuvable");
-
-        verify(placeRepository, never()).save(any());
-    }
-
-    @Test
     void testFindAll() {
         when(placeRepository.findAll()).thenReturn(List.of(place));
 

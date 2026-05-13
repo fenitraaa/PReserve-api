@@ -1,7 +1,6 @@
 package com.eni.preserve.service;
 
 import com.eni.preserve.entity.Place;
-import com.eni.preserve.entity.PlaceId;
 import com.eni.preserve.entity.Voiture;
 import com.eni.preserve.repository.PlaceRepository;
 import com.eni.preserve.repository.VoitureRepository;
@@ -16,19 +15,6 @@ public class PlaceService {
 
     private final PlaceRepository placeRepository;
     private final VoitureRepository voitureRepository;
-
-    public Place create(Long idvoit, int numeroPlace) {
-        Voiture voiture = voitureRepository.findById(idvoit)
-                .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
-
-        PlaceId placeId = new PlaceId(idvoit, numeroPlace);
-        Place place = new Place();
-        place.setVoiture(voiture);
-        place.setId(placeId);
-        place.setOccupation(false);
-
-        return placeRepository.save(place);
-    }
 
     public List<Place> findAll() {
         return placeRepository.findAll();
