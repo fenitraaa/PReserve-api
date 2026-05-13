@@ -7,6 +7,7 @@ import com.eni.preserve.entity.PlaceId;
 import com.eni.preserve.entity.Reserver;
 import com.eni.preserve.entity.Voiture;
 import com.eni.preserve.enums.TypePaiement;
+import com.eni.preserve.exception.BusinessException;
 import com.eni.preserve.mapper.ReserverMapper;
 import com.eni.preserve.repository.ClientRepository;
 import com.eni.preserve.repository.PlaceRepository;
@@ -31,14 +32,14 @@ public class ReserverService {
 
     public ReserverDTO create(ReserverDTO dto) {
         Voiture voiture = voitureRepository.findById(dto.getIdvoit())
-                .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
+                .orElseThrow(() -> new BusinessException("Voiture introuvable"));
 
         Client client = clientRepository.findById(dto.getIdcli())
-                .orElseThrow(() -> new RuntimeException("Client introuvable"));
+                .orElseThrow(() -> new BusinessException("Client introuvable"));
 
         PlaceId placeId = new PlaceId(dto.getIdvoit(), dto.getPlace());
         Place place = placeRepository.findById(placeId)
-                .orElseThrow(() -> new RuntimeException("Place introuvable"));
+                .orElseThrow(() -> new BusinessException("Place introuvable"));
 
         if (place.isOccupation()) {
             throw new RuntimeException("Place déjà occupée");
@@ -64,13 +65,13 @@ public class ReserverService {
 
     public ReserverDTO findById(Long id) {
         Reserver r = reserverRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Réservation introuvable"));
+                .orElseThrow(() -> new BusinessException("Réservation introuvable"));
         return reserverMapper.toDTO(r);
     }
 
     public ReserverDTO update(Long id, ReserverDTO dto) {
         Reserver existing = reserverRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Réservation introuvable"));
+                .orElseThrow(() -> new BusinessException("Réservation introuvable"));
         reserverMapper.updateEntity(existing, dto);
         Reserver updated = reserverRepository.save(existing);
         return reserverMapper.toDTO(updated);
@@ -78,7 +79,7 @@ public class ReserverService {
 
     public List<ReserverDTO> findByVoiture(Long idvoit) {
         Voiture voiture = voitureRepository.findById(idvoit)
-                .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
+                .orElseThrow(() -> new BusinessException("Voiture introuvable"));
         return reserverRepository.findByVoiture(voiture)
                 .stream()
                 .map(reserverMapper::toDTO)
@@ -94,7 +95,7 @@ public class ReserverService {
 
     public List<ReserverDTO> findByVoitureAndPayment(Long idvoit, TypePaiement payment) {
         Voiture voiture = voitureRepository.findById(idvoit)
-                .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
+                .orElseThrow(() -> new BusinessException("Voiture introuvable"));
         return reserverRepository.findByVoitureAndPayment(voiture, payment)
                 .stream()
                 .map(reserverMapper::toDTO)
@@ -103,7 +104,7 @@ public class ReserverService {
 
     public long countByVoitureAndPayment(Long idvoit, TypePaiement payment) {
         Voiture voiture = voitureRepository.findById(idvoit)
-                .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
+                .orElseThrow(() -> new BusinessException("Voiture introuvable"));
         return reserverRepository.countByVoitureAndPayment(voiture, payment);
     }
 

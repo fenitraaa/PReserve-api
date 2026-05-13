@@ -53,23 +53,6 @@ class PlaceControllerTest {
     }
 
     @Test
-    void testCreate() throws Exception {
-        when(placeService.create(1L, 1)).thenReturn(place);
-
-        mockMvc.perform(post("/api/places/1/1"))
-                .andExpect(status().isOk());
-
-        verify(placeService).create(1L, 1);
-    }
-
-    @Test
-    void testCreateVoitureIntrouvable() {
-        when(placeService.create(99L, 1)).thenThrow(new RuntimeException("Voiture introuvable"));
-
-        assertThrows(() -> mockMvc.perform(post("/api/places/99/1")));
-    }
-
-    @Test
     void testFindAll() throws Exception {
         when(placeService.findAll()).thenReturn(List.of(place));
 

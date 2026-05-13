@@ -6,6 +6,7 @@ import com.eni.preserve.mapper.ClientMapper;
 import com.eni.preserve.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.eni.preserve.exception.BusinessException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,13 +33,13 @@ public class ClientService {
 
     public ClientDTO findById(int id) {
         Client client = clientRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Client introuvable"));
+            .orElseThrow(() -> new BusinessException("Client introuvable"));
         return clientMapper.toDTO(client);
     }
 
     public ClientDTO update(int id, ClientDTO dto) {
         Client existing = clientRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Client introuvable"));
+            .orElseThrow(() -> new BusinessException("Client introuvable"));
         clientMapper.updateEntity(existing, dto);
         Client updated = clientRepository.save(existing);
         return clientMapper.toDTO(updated);

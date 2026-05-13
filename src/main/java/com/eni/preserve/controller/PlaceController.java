@@ -15,13 +15,6 @@ public class PlaceController {
 
     private final PlaceService placeService;
 
-    @PostMapping("/{idvoit}/{numeroPlace}")
-    public ResponseEntity<Place> create(
-            @PathVariable Long idvoit,
-            @PathVariable int numeroPlace) {
-        return ResponseEntity.ok(placeService.create(idvoit, numeroPlace));
-    }
-
     @GetMapping
     public ResponseEntity<List<Place>> findAll() {
         return ResponseEntity.ok(placeService.findAll());
