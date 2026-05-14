@@ -19,7 +19,7 @@ permissions:
   packages: write
 
 jobs:
-  Unit_test:
+  unit_test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
       
   build:
     runs-on: ubuntu-latest
-    needs: Unit_test
+    needs: unit_test
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
@@ -51,7 +51,7 @@ jobs:
         name: app-jar
         path: target/*.jar
 
-  docker:
+  build_image:
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -72,7 +72,63 @@ jobs:
         docker build -t ghcr.io/${{ github.repository_owner }}/preserve-api:latest .
         docker tag ghcr.io/${{ github.repository_owner }}/preserve-api:latest \
                    ghcr.io/${{ github.repository_owner }}/preserve-api:${{ github.sha }}
+    - name: Save Docker image
+      run: docker save ghcr.io/${{ github.repository_owner }}/preserve-api:latest \
+           -o preserve-api.tar
+
+    - name: Upload Docker image
+      uses: actions/upload-artifact@v4
+      with:
+        name: docker-image
+        path: preserve-api.tar
+  
+  test_integration:
+    runs-on: ubuntu-latest
+    needs: build_image
+    steps:
+      - name: Download docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+      - name: Load docker image
+        run: docker load -i preserve-api.tar
+      - name: Launch docker compose
+        run: docker compose -up
+        env:
+          DB_URL: ${{secrets.DB_URL}}
+          DB_USERNAME: ${{secrets.DB_USERNAME}}
+          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+      - name: Test app
+        run: |
+          echo "Attente du démarrage..."
+          for i in {1..30}; do
+            curl -s http://localhost:8080/api/voitures && break
+            echo "Tentative $i..."
+            sleep 5
+          done
+          
+  push_image:
+    runs-on: ubuntu-latest
+    needs: build_image
+    steps:
+    - name: Download Docker image
+      uses: actions/download-artifact@v4
+      with:
+        name: docker-image
+
+    - name: Load Docker image
+      run: docker load -i preserve-api.tar
+
+    - name: Log in to GHCR
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Push Docker image
       run: |
         docker push ghcr.io/${{ github.repository_owner }}/preserve-api:latest
         docker push ghcr.io/${{ github.repository_owner }}/preserve-api:${{ github.sha }}
+      
+      
