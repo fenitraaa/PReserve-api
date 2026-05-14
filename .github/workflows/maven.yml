@@ -101,6 +101,11 @@ jobs:
           DB_URL: ${{secrets.DB_URL}}
           DB_USERNAME: ${{secrets.DB_USERNAME}}
           DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+      - name: Logs containers
+        run: |
+          sleep 10
+          docker compose logs
+
       - name: Wait for app
         run: |
           echo "Attente du démarrage..."
