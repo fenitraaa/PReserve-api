@@ -51,13 +51,15 @@ public class VoitureService {
 
     public VoitureDTO findById(Long id) {
         Voiture v = voitureRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Voiture introuvable"));
+                    .orElseThrow(() -> new BusinessException("Voiture introuvable"));
+
         return voitureMapper.toDTO(v);
     }
 
     public VoitureDTO update(Long id, VoitureDTO dto) {
         Voiture existing = voitureRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Voiture introuvable"));
+
         voitureMapper.updateEntity(existing, dto);
         Voiture updated = voitureRepository.save(existing);
         return voitureMapper.toDTO(updated);
@@ -66,6 +68,7 @@ public class VoitureService {
     public int getPlacesLibres(Long id) {
         Voiture v = voitureRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Voiture introuvable"));
+
         return placeRepository.findByVoitureAndOccupation(v, false).size();
     }
 }
