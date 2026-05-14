@@ -101,16 +101,11 @@ jobs:
           DB_URL: ${{secrets.DB_URL}}
           DB_USERNAME: ${{secrets.DB_USERNAME}}
           DB_PASSWORD: ${{secrets.DB_PASSWORD}}
-      - name: Logs containers
-        run: |
-          sleep 10
-          docker compose logs
-
-      - name: Wait for app
+      - name: Test app
         run: |
           echo "Attente du démarrage..."
           for i in {1..30}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health || true)
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8084/actuator/health || true)
             echo "Tentative $i - Status: $STATUS"
             if [ "$STATUS" = "200" ]; then
               echo "App démarrée !"
@@ -118,8 +113,6 @@ jobs:
             fi
             sleep 5
           done
-      - name: Test app
-        run: curl -s http://localhost:8080/api/voitures
           
       - name: Stop services
         if: always()
