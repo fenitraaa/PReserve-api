@@ -1,8 +1,8 @@
 package com.eni.preserve.service;
 
 import com.eni.preserve.entity.Place;
-import com.eni.preserve.entity.PlaceId;
 import com.eni.preserve.entity.Voiture;
+import com.eni.preserve.exception.BusinessException;
 import com.eni.preserve.repository.PlaceRepository;
 import com.eni.preserve.repository.VoitureRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,26 +17,13 @@ public class PlaceService {
     private final PlaceRepository placeRepository;
     private final VoitureRepository voitureRepository;
 
-    public Place create(Long idvoit, int numeroPlace) {
-        Voiture voiture = voitureRepository.findById(idvoit)
-                .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
-
-        PlaceId placeId = new PlaceId(idvoit, numeroPlace);
-        Place place = new Place();
-        place.setVoiture(voiture);
-        place.setId(placeId);
-        place.setOccupation(false);
-
-        return placeRepository.save(place);
-    }
-
     public List<Place> findAll() {
         return placeRepository.findAll();
     }
 
     public List<Place> findByVoiture(Long idvoit) {
         Voiture voiture = voitureRepository.findById(idvoit)
-                .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
+                .orElseThrow(() -> new BusinessException("Voiture introuvable"));
         return placeRepository.findByVoiture(voiture);
     }
 
@@ -50,19 +37,19 @@ public class PlaceService {
 
     public List<Place> findByVoitureAndOccupation(Long idvoit, boolean occupation) {
         Voiture voiture = voitureRepository.findById(idvoit)
-                .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
+                .orElseThrow(() -> new BusinessException("Voiture introuvable"));
         return placeRepository.findByVoitureAndOccupation(voiture, occupation);
     }
 
     public Place occuperPlace(Long idvoit, int numeroPlace) {
         Voiture voiture = voitureRepository.findById(idvoit)
-                .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
+                .orElseThrow(() -> new BusinessException("Voiture introuvable"));
 
         Place place = placeRepository.findByVoitureAndIdPlace(voiture, numeroPlace)
-                .orElseThrow(() -> new RuntimeException("Place introuvable"));
+                .orElseThrow(() -> new BusinessException("Place introuvable"));
 
         if (place.isOccupation()) {
-            throw new RuntimeException("Place déjà occupée");
+            throw new BusinessException("Place déjà occupée");
         }
 
         place.setOccupation(true);
@@ -71,13 +58,13 @@ public class PlaceService {
 
     public Place libererPlace(Long idvoit, int numeroPlace) {
         Voiture voiture = voitureRepository.findById(idvoit)
-                .orElseThrow(() -> new RuntimeException("Voiture introuvable"));
+                .orElseThrow(() -> new BusinessException("Voiture introuvable"));
 
         Place place = placeRepository.findByVoitureAndIdPlace(voiture, numeroPlace)
-                .orElseThrow(() -> new RuntimeException("Place introuvable"));
+                .orElseThrow(() -> new BusinessException("Place introuvable"));
 
         if (!place.isOccupation()) {
-            throw new RuntimeException("Place déjà libre");
+            throw new BusinessException("Place déjà libre");
         }
 
         place.setOccupation(false);
