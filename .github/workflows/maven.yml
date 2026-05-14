@@ -19,7 +19,7 @@ permissions:
   packages: write
   
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: tru
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   unit_test:
@@ -102,13 +102,7 @@ jobs:
           DB_USERNAME: ${{secrets.DB_USERNAME}}
           DB_PASSWORD: ${{secrets.DB_PASSWORD}}
       - name: Test app
-        run: |
-          echo "Attente du démarrage..."
-          for i in {1..30}; do
-            curl -s http://localhost:8080/api/voitures && break
-            echo "Tentative $i..."
-            sleep 5
-          done
+        run: curl -s http://localhost:8080/api/voitures
           
       - name: Stop services
         if: always()
