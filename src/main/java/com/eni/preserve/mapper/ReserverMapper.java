@@ -40,7 +40,7 @@ public class ReserverMapper {
 
     public void updateEntity(Reserver r, ReserverDTO dto) {
         r.setPlace(dto.getPlace());
-        r.setDateReserv(dto.getDateReserv());
+        r.setDateReserv(r.getDateReserv());
         r.setDateVoyage(dto.getDateVoyage());
         r.setPayment(dto.getPayment());
         r.setMontantAvance(dto.getMontantAvance());

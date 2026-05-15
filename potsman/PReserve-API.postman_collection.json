@@ -1,0 +1,860 @@
+{
+	"info": {
+		"_postman_id": "0b868a1a-9577-41c9-be66-17d0c28b8c04",
+		"name": "PReserve-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47363626",
+		"_collection_link": "https://tojonirinafenitra8-8788991.postman.co/workspace/542ec72d-87c9-4b5d-8875-49973a00f165/collection/47363626-0b868a1a-9577-41c9-be66-17d0c28b8c04?action=share&source=collection_link&creator=47363626"
+	},
+	"item": [
+		{
+			"name": "All POST",
+			"item": [
+				{
+					"name": "CreateVoiture",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Stocker idvoit\", function () {",
+									"    const data = pm.response.json();",
+									"    pm.collectionVariables.set(\"idvoit\", data.idvoit);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"design\": \"Volkswagen Crafter\",\n    \"type\": \"PREMIUM\",\n    \"nbrplace\": 12,\n    \"frais\": 50000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{spring_url}}/api/voitures",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"voitures"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateClient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Stocker idcli\", function () {",
+									"    const data = pm.response.json();",
+									"    pm.collectionVariables.set(\"idcli\", data.idcli);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\": \"Andry\",\n    \"numtel\": \"0335111821\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{spring_url}}/api/clients",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateReservation AVEC_AVANCE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Stocker idreserv\", function () {",
+									"    const data = pm.response.json();",
+									"    pm.collectionVariables.set(\"idreserv\", data.idreserv);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idvoit\": {{idvoit}},\n    \"idcli\": {{idcli}},\n    \"place\": 1,\n    \"dateVoyage\": \"2026-05-25\",\n    \"payment\": \"AVEC_AVANCE\",\n    \"montantAvance\": 5000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{spring_url}}/api/reservations",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateReservation SANS_AVANCE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Stocker idreserv\", function () {",
+									"    const data = pm.response.json();",
+									"    pm.collectionVariables.set(\"idreserv\", data.idreserv);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\n{\n    \"idvoit\": {{idvoit}},\n    \"idcli\": {{idcli}},\n    \"place\": 2,\n    \"dateVoyage\": \"2026-05-25\",\n    \"payment\": \"SANS_AVANCE\",\n    \"montantAvance\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{spring_url}}/api/reservations",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateReservation TOUT_PAYE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Stocker idreserv\", function () {",
+									"    const data = pm.response.json();",
+									"    pm.collectionVariables.set(\"idreserv\", data.idreserv);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idvoit\": {{idvoit}},\n    \"idcli\": {{idcli}},\n    \"place\": 3,\n    \"dateVoyage\": \"2026-05-25\",\n    \"payment\": \"TOUT_PAYE\",\n    \"montantAvance\": 55000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{spring_url}}/api/reservations",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "All GET",
+			"item": [
+				{
+					"name": "GetVoitures",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/voitures",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"voitures"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetVoituresByID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/voitures/{{idvoit}}",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"voitures",
+								"{{idvoit}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetClients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/clients",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetClientsById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/clients/{{idcli}}",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"clients",
+								"{{idcli}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/clients/recherche?q=Fen",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"clients",
+								"recherche"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "Fen"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetPlacesLibres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/voitures/{{idvoit}}/places-libres",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"voitures",
+								"{{idvoit}}",
+								"places-libres"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetPlaces",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/places",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"places"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetPlacesVoiture",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/places/1",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"places",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetPlacesLibres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/places/libres",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"places",
+								"libres"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetPlacesOccupees",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/places/occupees",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"places",
+								"occupees"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetPlacesReservation Voiture",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/reservations/voiture/{{idvoit}}",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"voiture",
+								"{{idvoit}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetPlacesReservation SANS_AVANCE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/reservations/payment/SANS_AVANCE",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"payment",
+								"SANS_AVANCE"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetPlacesReservation AVEC_AVANCE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/reservations/payment/AVEC_AVANCE",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"payment",
+								"AVEC_AVANCE"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetPlacesReservation TOUT_PAYE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/reservations/payment/TOUT_PAYE",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"payment",
+								"TOUT_PAYE"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetVoiture SANS_AVANCE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/reservations/voiture/{{idvoit}}/payment/SANS_AVANCE",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"voiture",
+								"{{idvoit}}",
+								"payment",
+								"SANS_AVANCE"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetVoiture AVEC_AVANCE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/reservations/voiture/{{idvoit}}/payment/AVEC_AVANCE",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"voiture",
+								"{{idvoit}}",
+								"payment",
+								"AVEC_AVANCE"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetVoiture TOUT_PAYE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/reservations/voiture/{{idvoit}}/payment/TOUT_PAYE",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"voiture",
+								"{{idvoit}}",
+								"payment",
+								"TOUT_PAYE"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetNombre SANS_AVANCE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/reservations/voiture/{{idvoit}}/payment/SANS_AVANCE/count",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"voiture",
+								"{{idvoit}}",
+								"payment",
+								"SANS_AVANCE",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetNombre AVEC_AVANCE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/reservations/voiture/{{idvoit}}/payment/AVEC_AVANCE/count",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"voiture",
+								"{{idvoit}}",
+								"payment",
+								"AVEC_AVANCE",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetNombre TOUT_PAYE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/reservations/voiture/{{idvoit}}/payment/TOUT_PAYE/count",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"voiture",
+								"{{idvoit}}",
+								"payment",
+								"TOUT_PAYE",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetRecette",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{spring_url}}/api/reservations/recette",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"recette"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "All PUT",
+			"item": [
+				{
+					"name": "UpdateVoiture",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"design\": \"Volkswagen Crafter\",\n    \"type\": \"PREMIUM\",\n    \"nbrplace\": 12,\n    \"frais\": 55000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{spring_url}}/api/voitures/{{idvoit}}",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"voitures",
+								"{{idvoit}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateClient",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\": \"Tojo\",\n    \"numtel\": \"0335111821\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{spring_url}}/api/clients/{{idcli}}",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"clients",
+								"{{idcli}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Place liberer",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{spring_url}}/api/places/{{idvoit}}/{{numeroPlace}}/liberer",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"places",
+								"{{idvoit}}",
+								"{{numeroPlace}}",
+								"liberer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Place occuper",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{spring_url}}/api/places/{{idvoit}}/{{numeroPlace}}/occuper",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"places",
+								"{{idvoit}}",
+								"{{numeroPlace}}",
+								"occuper"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Reservation",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"place\": 3,\n    \"dateVoyage\": \"2026-05-25\",\n    \"payment\": \"SANS_AVANCE\",\n    \"montantAvance\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{spring_url}}/api/reservations/{{idreserv}}",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"{{idreserv}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "idvoit",
+			"value": ""
+		},
+		{
+			"key": "idcli",
+			"value": ""
+		},
+		{
+			"key": "idreserv",
+			"value": ""
+		},
+		{
+			"key": "numeroPlace",
+			"value": ""
+		}
+	]
+}

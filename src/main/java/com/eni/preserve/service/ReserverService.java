@@ -73,6 +73,7 @@ public class ReserverService {
         Reserver existing = reserverRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Réservation introuvable"));
         reserverMapper.updateEntity(existing, dto);
+        existing.setDateReserv(existing.getDateReserv());
         Reserver updated = reserverRepository.save(existing);
         return reserverMapper.toDTO(updated);
     }
