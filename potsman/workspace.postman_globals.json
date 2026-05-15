@@ -1,0 +1,15 @@
+{
+	"id": "16d00b73-fc91-40bb-868c-46852a3a6cb8",
+	"values": [
+		{
+			"key": "spring_url",
+			"value": "http://localhost:8080",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"name": "Globals",
+	"_postman_variable_scope": "globals",
+	"_postman_exported_at": "2026-05-15T09:15:06.806Z",
+	"_postman_exported_using": "Postman/11.72.3"
+}
