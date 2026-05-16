@@ -17,14 +17,17 @@ on:
 permissions:
   contents: read
   packages: write
+  
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  Unit_test:
+  unit_test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4.2.2
     - name: Set up JDK 17
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v4.7.0
       with:
         java-version: '17'
         distribution: 'temurin'
@@ -34,11 +37,11 @@ jobs:
       
   build:
     runs-on: ubuntu-latest
-    needs: Unit_test
+    needs: unit_test
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4.2.2
     - name: Set up JDK 17
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v4.7.0
       with:
         java-version: '17'
         distribution: 'temurin'
@@ -51,28 +54,103 @@ jobs:
         name: app-jar
         path: target/*.jar
 
-  docker:
+  build_image:
     runs-on: ubuntu-latest
     needs: build
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4.2.2
     - name: Download JAR
       uses: actions/download-artifact@v4
       with:
         name: app-jar
         path: target
+    - name: Build Docker image
+      run: |
+        docker build -t ghcr.io/${{ github.repository_owner }}/preserve-api:latest .
+        docker tag ghcr.io/${{ github.repository_owner }}/preserve-api:latest \
+                   ghcr.io/${{ github.repository_owner }}/preserve-api:${{ github.sha }}
+    - name: Save Docker image
+      run: docker save ghcr.io/${{ github.repository_owner }}/preserve-api:${{ github.sha }} -o preserve-api.tar
+
+    - name: Upload Docker image
+      uses: actions/upload-artifact@v4
+      with:
+        name: docker-image
+        path: preserve-api.tar
+  
+  test_integration:
+    runs-on: ubuntu-latest
+    needs: build_image
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4.7.0
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven    
+      - name: Download docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+      - name: Load docker image
+        run: docker load -i preserve-api.tar
+      - name: Launch docker compose
+        run: docker compose up -d
+        env:
+          DB_URL: ${{secrets.DB_URL}}
+          DB_USERNAME: ${{secrets.DB_USERNAME}}
+          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+      - name: Test app
+        run: |
+          echo "Attente du démarrage..."
+          for i in {1..30}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8084/actuator/health || true)
+            echo "Tentative $i - Status: $STATUS"
+            if [ "$STATUS" = "200" ]; then
+              echo "App démarrée"
+              break
+            fi
+            sleep 5
+          done
+          
+      - name: Run Newman tests
+        run: |
+          newman run /postman/PReserve-API.postman_collection.json \
+            --env-var "spring_url=http://localhost:8084" \
+            --reporters cli,html \
+            --reporter-html-export rapport.html
+  
+      - name: Upload rapport
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-rapport
+          path: rapport.html
+            
+      - name: Stop services
+        if: always()
+        run: docker compose down
+          
+  push_image:
+    runs-on: ubuntu-latest
+    needs: test_integration
+    steps:
+    - name: Download Docker image
+      uses: actions/download-artifact@v4
+      with:
+        name: docker-image
+
+    - name: Load Docker image
+      run: docker load -i preserve-api.tar
+
     - name: Log in to GHCR
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Build Docker image
-      run: |
-        docker build -t ghcr.io/${{ github.repository_owner }}/preserve-api:latest .
-        docker tag ghcr.io/${{ github.repository_owner }}/preserve-api:latest \
-                   ghcr.io/${{ github.repository_owner }}/preserve-api:${{ github.sha }}
+
     - name: Push Docker image
-      run: |
-        docker push ghcr.io/${{ github.repository_owner }}/preserve-api:latest
-        docker push ghcr.io/${{ github.repository_owner }}/preserve-api:${{ github.sha }}
+      run: docker push ghcr.io/${{ github.repository_owner }}/preserve-api:${{ github.sha }}
+      
+      
