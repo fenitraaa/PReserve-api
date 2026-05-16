@@ -39,15 +39,14 @@ class PlaceControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(placeController).build();
 
         voiture = new Voiture();
-        voiture.setIdvoit(1L);
+        voiture.setIdvoit("V001");
         voiture.setDesign("Toyota");
         voiture.setType(TypeVoiture.SIMPLE);
         voiture.setNbrplace(5);
         voiture.setFrais(10000);
 
-        PlaceId placeId = new PlaceId(1L, 1);
         place = new Place();
-        place.setId(placeId);
+        place.setId(new PlaceId("V001", 1));
         place.setVoiture(voiture);
         place.setOccupation(false);
     }
@@ -70,17 +69,17 @@ class PlaceControllerTest {
 
     @Test
     void testFindByVoiture() throws Exception {
-        when(placeService.findByVoiture(1L)).thenReturn(List.of(place));
+        when(placeService.findByVoiture("V001")).thenReturn(List.of(place));
 
-        mockMvc.perform(get("/api/places/1"))
+        mockMvc.perform(get("/api/places/V001"))
                 .andExpect(status().isOk());
     }
 
     @Test
     void testFindByVoitureIntrouvable() {
-        when(placeService.findByVoiture(99L)).thenThrow(new RuntimeException("Voiture introuvable"));
+        when(placeService.findByVoiture("V999")).thenThrow(new RuntimeException("Voiture introuvable"));
 
-        assertThrows(() -> mockMvc.perform(get("/api/places/99")));
+        assertThrows(() -> mockMvc.perform(get("/api/places/V999")));
     }
 
     @Test
@@ -103,50 +102,50 @@ class PlaceControllerTest {
     @Test
     void testOccuper() throws Exception {
         place.setOccupation(true);
-        when(placeService.occuperPlace(1L, 1)).thenReturn(place);
+        when(placeService.occuperPlace("V001", 1)).thenReturn(place);
 
-        mockMvc.perform(put("/api/places/1/1/occuper"))
+        mockMvc.perform(put("/api/places/V001/1/occuper"))
                 .andExpect(status().isOk());
 
-        verify(placeService).occuperPlace(1L, 1);
+        verify(placeService).occuperPlace("V001", 1);
     }
 
     @Test
     void testOccuperPlaceIntrouvable() {
-        when(placeService.occuperPlace(1L, 99)).thenThrow(new RuntimeException("Place introuvable"));
+        when(placeService.occuperPlace("V001", 99)).thenThrow(new RuntimeException("Place introuvable"));
 
-        assertThrows(() -> mockMvc.perform(put("/api/places/1/99/occuper")));
+        assertThrows(() -> mockMvc.perform(put("/api/places/V001/99/occuper")));
     }
 
     @Test
     void testOccuperPlaceDejaOccupee() {
-        when(placeService.occuperPlace(1L, 1)).thenThrow(new RuntimeException("Place déjà occupée"));
+        when(placeService.occuperPlace("V001", 1)).thenThrow(new RuntimeException("Place déjà occupée"));
 
-        assertThrows(() -> mockMvc.perform(put("/api/places/1/1/occuper")));
+        assertThrows(() -> mockMvc.perform(put("/api/places/V001/1/occuper")));
     }
 
     @Test
     void testLiberer() throws Exception {
-        when(placeService.libererPlace(1L, 1)).thenReturn(place);
+        when(placeService.libererPlace("V001", 1)).thenReturn(place);
 
-        mockMvc.perform(put("/api/places/1/1/liberer"))
+        mockMvc.perform(put("/api/places/V001/1/liberer"))
                 .andExpect(status().isOk());
 
-        verify(placeService).libererPlace(1L, 1);
+        verify(placeService).libererPlace("V001", 1);
     }
 
     @Test
     void testLibererPlaceIntrouvable() {
-        when(placeService.libererPlace(1L, 99)).thenThrow(new RuntimeException("Place introuvable"));
+        when(placeService.libererPlace("V001", 99)).thenThrow(new RuntimeException("Place introuvable"));
 
-        assertThrows(() -> mockMvc.perform(put("/api/places/1/99/liberer")));
+        assertThrows(() -> mockMvc.perform(put("/api/places/V001/99/liberer")));
     }
 
     @Test
     void testLibererPlaceDejaLibre() {
-        when(placeService.libererPlace(1L, 1)).thenThrow(new RuntimeException("Place déjà libre"));
+        when(placeService.libererPlace("V001", 1)).thenThrow(new RuntimeException("Place déjà libre"));
 
-        assertThrows(() -> mockMvc.perform(put("/api/places/1/1/liberer")));
+        assertThrows(() -> mockMvc.perform(put("/api/places/V001/1/liberer")));
     }
 
     private void assertThrows(ThrowingRunnable action) {

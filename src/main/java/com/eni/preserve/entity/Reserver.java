@@ -1,6 +1,8 @@
 package com.eni.preserve.entity;
 
 import com.eni.preserve.enums.TypePaiement;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,9 +18,8 @@ import java.time.LocalDateTime;
 public class Reserver {
 
     @Id
-    @Column(name = "idreserv")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idreserv;
+    @Column(name = "idreserv", length = 10)
+    private String idreserv;
 
     @ManyToOne
     @JoinColumn(name = "idvoit", nullable = false)
@@ -31,6 +32,7 @@ public class Reserver {
     @Column(name = "place", nullable = false)
     private int place;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "date_reserv", nullable = false)
     private LocalDateTime dateReserv;
 

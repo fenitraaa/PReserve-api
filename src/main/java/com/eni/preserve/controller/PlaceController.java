@@ -21,7 +21,7 @@ public class PlaceController {
     }
 
     @GetMapping("/{idvoit}")
-    public ResponseEntity<List<Place>> findByVoiture(@PathVariable Long idvoit) {
+    public ResponseEntity<List<Place>> findByVoiture(@PathVariable String idvoit) {
         return ResponseEntity.ok(placeService.findByVoiture(idvoit));
     }
 
@@ -37,14 +37,14 @@ public class PlaceController {
 
     @PutMapping("/{idvoit}/{numeroPlace}/occuper")
     public ResponseEntity<Place> occuper(
-            @PathVariable Long idvoit,
+            @PathVariable String idvoit,
             @PathVariable int numeroPlace) {
         return ResponseEntity.ok(placeService.occuperPlace(idvoit, numeroPlace));
     }
 
     @PutMapping("/{idvoit}/{numeroPlace}/liberer")
     public ResponseEntity<Place> liberer(
-            @PathVariable Long idvoit,
+            @PathVariable String idvoit,
             @PathVariable int numeroPlace) {
         return ResponseEntity.ok(placeService.libererPlace(idvoit, numeroPlace));
     }

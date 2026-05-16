@@ -13,6 +13,6 @@ import java.io.Serializable;
 @Embeddable
 public class PlaceId implements Serializable {
 
-    private Long idvoit;
+    private String idvoit;
     private int place;
 }

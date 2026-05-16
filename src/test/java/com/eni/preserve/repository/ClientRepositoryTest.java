@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,10 +24,12 @@ class ClientRepositoryTest {
         repo.deleteAll();
 
         client1 = new Client();
+        client1.setIdcli("C001");
         client1.setNom("Fenitra");
         client1.setNumtel("0345351885");
 
         client2 = new Client();
+        client2.setIdcli("C002");
         client2.setNom("Tojo");
         client2.setNumtel("0330551248");
 
@@ -42,33 +45,34 @@ class ClientRepositoryTest {
 
     @Test
     void testFindById() {
-        Client result = repo.findById(client1.getIdcli()).orElse(null);
+        Client result = repo.findById("C001").orElse(null);
         assertThat(result).isNotNull();
         assertThat(result.getNom()).isEqualTo("Fenitra");
     }
 
     @Test
     void testFindByIdFail() {
-        var result = repo.findById(9999);
+        var result = repo.findById("C999");
         assertThat(result).isEmpty();
     }
 
     @Test
     void testSave() {
         Client nouveau = new Client();
+        nouveau.setIdcli("C003");
         nouveau.setNom("Rabe");
         nouveau.setNumtel("0321234567");
 
         Client saved = repo.save(nouveau);
 
-        assertThat(saved.getIdcli()).isNotNull();
+        assertThat(saved.getIdcli()).isEqualTo("C003");
         assertThat(saved.getNom()).isEqualTo("Rabe");
     }
 
     @Test
     void testDelete() {
-        repo.deleteById(client1.getIdcli());
-        assertThat(repo.findById(client1.getIdcli())).isEmpty();
+        repo.deleteById("C001");
+        assertThat(repo.findById("C001")).isEmpty();
     }
 
     @Test

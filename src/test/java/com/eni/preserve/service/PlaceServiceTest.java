@@ -38,13 +38,13 @@ class PlaceServiceTest {
     @BeforeEach
     void init() {
         voiture = new Voiture();
-        voiture.setIdvoit(1L);
+        voiture.setIdvoit("V001");
         voiture.setDesign("Toyota");
         voiture.setType(TypeVoiture.SIMPLE);
         voiture.setNbrplace(5);
         voiture.setFrais(10000);
 
-        placeId = new PlaceId(1L, 1);
+        placeId = new PlaceId("V001", 1);
 
         place = new Place();
         place.setId(placeId);
@@ -72,19 +72,19 @@ class PlaceServiceTest {
 
     @Test
     void testFindByVoiture() {
-        when(voitureRepository.findById(1L)).thenReturn(Optional.of(voiture));
+        when(voitureRepository.findById("V001")).thenReturn(Optional.of(voiture));
         when(placeRepository.findByVoiture(voiture)).thenReturn(List.of(place));
 
-        List<Place> result = placeService.findByVoiture(1L);
+        List<Place> result = placeService.findByVoiture("V001");
 
         assertThat(result).hasSize(1);
     }
 
     @Test
     void testFindByVoitureIntrouvable() {
-        when(voitureRepository.findById(99L)).thenReturn(Optional.empty());
+        when(voitureRepository.findById("V999")).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> placeService.findByVoiture(99L))
+        assertThatThrownBy(() -> placeService.findByVoiture("V999"))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Voiture introuvable");
     }
@@ -112,21 +112,21 @@ class PlaceServiceTest {
 
     @Test
     void testFindByVoitureAndOccupation() {
-        when(voitureRepository.findById(1L)).thenReturn(Optional.of(voiture));
+        when(voitureRepository.findById("V001")).thenReturn(Optional.of(voiture));
         when(placeRepository.findByVoitureAndOccupation(voiture, false)).thenReturn(List.of(place));
 
-        List<Place> result = placeService.findByVoitureAndOccupation(1L, false);
+        List<Place> result = placeService.findByVoitureAndOccupation("V001", false);
 
         assertThat(result).hasSize(1);
     }
 
     @Test
     void testOccuperPlace() {
-        when(voitureRepository.findById(1L)).thenReturn(Optional.of(voiture));
+        when(voitureRepository.findById("V001")).thenReturn(Optional.of(voiture));
         when(placeRepository.findByVoitureAndIdPlace(voiture, 1)).thenReturn(Optional.of(place));
         when(placeRepository.save(place)).thenReturn(place);
 
-        Place result = placeService.occuperPlace(1L, 1);
+        Place result = placeService.occuperPlace("V001", 1);
 
         assertThat(result.isOccupation()).isTrue();
         verify(placeRepository).save(place);
@@ -135,10 +135,10 @@ class PlaceServiceTest {
     @Test
     void testOccuperPlaceDejaOccupee() {
         place.setOccupation(true);
-        when(voitureRepository.findById(1L)).thenReturn(Optional.of(voiture));
+        when(voitureRepository.findById("V001")).thenReturn(Optional.of(voiture));
         when(placeRepository.findByVoitureAndIdPlace(voiture, 1)).thenReturn(Optional.of(place));
 
-        assertThatThrownBy(() -> placeService.occuperPlace(1L, 1))
+        assertThatThrownBy(() -> placeService.occuperPlace("V001", 1))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Place déjà occupée");
 
@@ -147,10 +147,10 @@ class PlaceServiceTest {
 
     @Test
     void testOccuperPlaceIntrouvable() {
-        when(voitureRepository.findById(1L)).thenReturn(Optional.of(voiture));
+        when(voitureRepository.findById("V001")).thenReturn(Optional.of(voiture));
         when(placeRepository.findByVoitureAndIdPlace(voiture, 99)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> placeService.occuperPlace(1L, 99))
+        assertThatThrownBy(() -> placeService.occuperPlace("V001", 99))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Place introuvable");
     }
@@ -158,11 +158,11 @@ class PlaceServiceTest {
     @Test
     void testLibererPlace() {
         place.setOccupation(true);
-        when(voitureRepository.findById(1L)).thenReturn(Optional.of(voiture));
+        when(voitureRepository.findById("V001")).thenReturn(Optional.of(voiture));
         when(placeRepository.findByVoitureAndIdPlace(voiture, 1)).thenReturn(Optional.of(place));
         when(placeRepository.save(place)).thenReturn(place);
 
-        Place result = placeService.libererPlace(1L, 1);
+        Place result = placeService.libererPlace("V001", 1);
 
         assertThat(result.isOccupation()).isFalse();
         verify(placeRepository).save(place);
@@ -170,10 +170,10 @@ class PlaceServiceTest {
 
     @Test
     void testLibererPlaceDejaLibre() {
-        when(voitureRepository.findById(1L)).thenReturn(Optional.of(voiture));
+        when(voitureRepository.findById("V001")).thenReturn(Optional.of(voiture));
         when(placeRepository.findByVoitureAndIdPlace(voiture, 1)).thenReturn(Optional.of(place));
 
-        assertThatThrownBy(() -> placeService.libererPlace(1L, 1))
+        assertThatThrownBy(() -> placeService.libererPlace("V001", 1))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Place déjà libre");
 
@@ -182,10 +182,10 @@ class PlaceServiceTest {
 
     @Test
     void testLibererPlaceIntrouvable() {
-        when(voitureRepository.findById(1L)).thenReturn(Optional.of(voiture));
+        when(voitureRepository.findById("V001")).thenReturn(Optional.of(voiture));
         when(placeRepository.findByVoitureAndIdPlace(voiture, 99)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> placeService.libererPlace(1L, 99))
+        assertThatThrownBy(() -> placeService.libererPlace("V001", 99))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Place introuvable");
     }

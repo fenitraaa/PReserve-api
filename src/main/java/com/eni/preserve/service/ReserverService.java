@@ -15,6 +15,7 @@ import com.eni.preserve.repository.ReserverRepository;
 import com.eni.preserve.repository.VoitureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.eni.preserve.util.IdGenerator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,8 +30,9 @@ public class ReserverService {
     private final VoitureRepository voitureRepository;
     private final ClientRepository clientRepository;
     private final PlaceRepository placeRepository;
+    private final IdGenerator idGenerator;
 
-    public ReserverDTO create(ReserverDTO dto) {
+        public ReserverDTO create(ReserverDTO dto) {
         Voiture voiture = voitureRepository.findById(dto.getIdvoit())
                 .orElseThrow(() -> new BusinessException("Voiture introuvable"));
 
@@ -42,19 +44,21 @@ public class ReserverService {
                 .orElseThrow(() -> new BusinessException("Place introuvable"));
 
         if (place.isOccupation()) {
-            throw new RuntimeException("Place déjà occupée");
+                throw new BusinessException("Place déjà occupée");
         }
 
         dto.setDateReserv(LocalDateTime.now());
 
         Reserver reserver = reserverMapper.toEntity(dto, voiture, client);
+        reserver.setIdreserv(idGenerator.generateReserverId());
+
         Reserver saved = reserverRepository.save(reserver);
 
         place.setOccupation(true);
         placeRepository.save(place);
 
         return reserverMapper.toDTO(saved);
-    }
+        }
 
     public List<ReserverDTO> findAll() {
         return reserverRepository.findAll()
@@ -63,13 +67,13 @@ public class ReserverService {
                 .collect(Collectors.toList());
     }
 
-    public ReserverDTO findById(Long id) {
+    public ReserverDTO findById(String id) {
         Reserver r = reserverRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Réservation introuvable"));
         return reserverMapper.toDTO(r);
     }
 
-    public ReserverDTO update(Long id, ReserverDTO dto) {
+    public ReserverDTO update(String id, ReserverDTO dto) {
         Reserver existing = reserverRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Réservation introuvable"));
         reserverMapper.updateEntity(existing, dto);
@@ -78,7 +82,7 @@ public class ReserverService {
         return reserverMapper.toDTO(updated);
     }
 
-    public List<ReserverDTO> findByVoiture(Long idvoit) {
+    public List<ReserverDTO> findByVoiture(String idvoit) {
         Voiture voiture = voitureRepository.findById(idvoit)
                 .orElseThrow(() -> new BusinessException("Voiture introuvable"));
         return reserverRepository.findByVoiture(voiture)
@@ -94,7 +98,7 @@ public class ReserverService {
                 .collect(Collectors.toList());
     }
 
-    public List<ReserverDTO> findByVoitureAndPayment(Long idvoit, TypePaiement payment) {
+    public List<ReserverDTO> findByVoitureAndPayment(String idvoit, TypePaiement payment) {
         Voiture voiture = voitureRepository.findById(idvoit)
                 .orElseThrow(() -> new BusinessException("Voiture introuvable"));
         return reserverRepository.findByVoitureAndPayment(voiture, payment)
@@ -103,7 +107,7 @@ public class ReserverService {
                 .collect(Collectors.toList());
     }
 
-    public long countByVoitureAndPayment(Long idvoit, TypePaiement payment) {
+    public long countByVoitureAndPayment(String idvoit, TypePaiement payment) {
         Voiture voiture = voitureRepository.findById(idvoit)
                 .orElseThrow(() -> new BusinessException("Voiture introuvable"));
         return reserverRepository.countByVoitureAndPayment(voiture, payment);

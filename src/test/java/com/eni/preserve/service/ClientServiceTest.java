@@ -4,6 +4,7 @@ import com.eni.preserve.dto.ClientDTO;
 import com.eni.preserve.entity.Client;
 import com.eni.preserve.mapper.ClientMapper;
 import com.eni.preserve.repository.ClientRepository;
+import com.eni.preserve.util.IdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +28,9 @@ class ClientServiceTest {
     @Mock
     private ClientMapper mapper;
 
+    @Mock
+    private IdGenerator idGenerator;
+
     @InjectMocks
     private ClientService service;
 
@@ -36,7 +40,7 @@ class ClientServiceTest {
     @BeforeEach
     void init() {
         client = new Client();
-        client.setIdcli(1);
+        client.setIdcli("C001");
         client.setNom("Fenitra");
         client.setNumtel("0345351885");
 
@@ -47,6 +51,7 @@ class ClientServiceTest {
 
     @Test
     void testCreate() {
+        when(idGenerator.generateClientId()).thenReturn("C001");
         when(mapper.toEntity(dto)).thenReturn(client);
         when(repo.save(client)).thenReturn(client);
         when(mapper.toDTO(client)).thenReturn(dto);
@@ -78,19 +83,19 @@ class ClientServiceTest {
 
     @Test
     void testFindById() {
-        when(repo.findById(1)).thenReturn(Optional.of(client));
+        when(repo.findById("C001")).thenReturn(Optional.of(client));
         when(mapper.toDTO(client)).thenReturn(dto);
 
-        ClientDTO res = service.findById(1);
+        ClientDTO res = service.findById("C001");
 
         assertThat(res).isEqualTo(dto);
     }
 
     @Test
     void testFindByIdFail() {
-        when(repo.findById(99)).thenReturn(Optional.empty());
+        when(repo.findById("C999")).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.findById(99))
+        assertThatThrownBy(() -> service.findById("C999"))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Client introuvable");
     }
@@ -101,11 +106,11 @@ class ClientServiceTest {
         newDto.setNom("Tojo");
         newDto.setNumtel("0330551248");
 
-        when(repo.findById(1)).thenReturn(Optional.of(client));
+        when(repo.findById("C001")).thenReturn(Optional.of(client));
         when(repo.save(client)).thenReturn(client);
         when(mapper.toDTO(client)).thenReturn(newDto);
 
-        ClientDTO res = service.update(1, newDto);
+        ClientDTO res = service.update("C001", newDto);
 
         assertThat(res).isEqualTo(newDto);
         verify(mapper).updateEntity(client, newDto);
@@ -114,9 +119,9 @@ class ClientServiceTest {
 
     @Test
     void testUpdateFail() {
-        when(repo.findById(99)).thenReturn(Optional.empty());
+        when(repo.findById("C999")).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.update(99, dto))
+        assertThatThrownBy(() -> service.update("C999", dto))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Client introuvable");
 

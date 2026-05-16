@@ -33,20 +33,20 @@ public class VoitureController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VoitureDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<VoitureDTO> findById(@PathVariable String id) {
         return ResponseEntity.ok(voitureService.findById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<VoitureDTO> update(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestBody VoitureDTO dto
     ) {
         return ResponseEntity.ok(voitureService.update(id, dto));
     }
 
     @GetMapping("/{id}/places-libres")
-    public ResponseEntity<Integer> getPlacesLibres(@PathVariable Long id) {
+    public ResponseEntity<Integer> getPlacesLibres(@PathVariable String id) {
         int placesLibres = voitureService.getPlacesLibres(id);
         return ResponseEntity.ok(placesLibres);
     }

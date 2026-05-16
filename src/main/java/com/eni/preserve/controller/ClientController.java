@@ -27,13 +27,13 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClientDTO> findById(@PathVariable int id) {
+    public ResponseEntity<ClientDTO> findById(@PathVariable String id) {
         return ResponseEntity.ok(clientService.findById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ClientDTO> update(
-            @PathVariable int id,
+            @PathVariable String id,
             @RequestBody ClientDTO dto
     ) {
         return ResponseEntity.ok(clientService.update(id, dto));

@@ -21,7 +21,7 @@ public class PlaceService {
         return placeRepository.findAll();
     }
 
-    public List<Place> findByVoiture(Long idvoit) {
+    public List<Place> findByVoiture(String idvoit) {
         Voiture voiture = voitureRepository.findById(idvoit)
                 .orElseThrow(() -> new BusinessException("Voiture introuvable"));
         return placeRepository.findByVoiture(voiture);
@@ -35,13 +35,13 @@ public class PlaceService {
         return placeRepository.findByOccupation(true);
     }
 
-    public List<Place> findByVoitureAndOccupation(Long idvoit, boolean occupation) {
+    public List<Place> findByVoitureAndOccupation(String idvoit, boolean occupation) {
         Voiture voiture = voitureRepository.findById(idvoit)
                 .orElseThrow(() -> new BusinessException("Voiture introuvable"));
         return placeRepository.findByVoitureAndOccupation(voiture, occupation);
     }
 
-    public Place occuperPlace(Long idvoit, int numeroPlace) {
+    public Place occuperPlace(String idvoit, int numeroPlace) {
         Voiture voiture = voitureRepository.findById(idvoit)
                 .orElseThrow(() -> new BusinessException("Voiture introuvable"));
 
@@ -56,7 +56,7 @@ public class PlaceService {
         return placeRepository.save(place);
     }
 
-    public Place libererPlace(Long idvoit, int numeroPlace) {
+    public Place libererPlace(String idvoit, int numeroPlace) {
         Voiture voiture = voitureRepository.findById(idvoit)
                 .orElseThrow(() -> new BusinessException("Voiture introuvable"));
 
