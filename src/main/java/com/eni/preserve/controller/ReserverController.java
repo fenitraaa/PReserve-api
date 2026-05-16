@@ -27,19 +27,19 @@ public class ReserverController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReserverDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<ReserverDTO> findById(@PathVariable String id) {
         return ResponseEntity.ok(reserverService.findById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ReserverDTO> update(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestBody ReserverDTO dto) {
         return ResponseEntity.ok(reserverService.update(id, dto));
     }
 
     @GetMapping("/voiture/{idvoit}")
-    public ResponseEntity<List<ReserverDTO>> findByVoiture(@PathVariable Long idvoit) {
+    public ResponseEntity<List<ReserverDTO>> findByVoiture(@PathVariable String idvoit) {
         return ResponseEntity.ok(reserverService.findByVoiture(idvoit));
     }
 
@@ -50,14 +50,14 @@ public class ReserverController {
 
     @GetMapping("/voiture/{idvoit}/payment/{payment}")
     public ResponseEntity<List<ReserverDTO>> findByVoitureAndPayment(
-            @PathVariable Long idvoit,
+            @PathVariable String idvoit,
             @PathVariable TypePaiement payment) {
         return ResponseEntity.ok(reserverService.findByVoitureAndPayment(idvoit, payment));
     }
 
     @GetMapping("/voiture/{idvoit}/payment/{payment}/count")
     public ResponseEntity<Long> countByVoitureAndPayment(
-            @PathVariable Long idvoit,
+            @PathVariable String idvoit,
             @PathVariable TypePaiement payment) {
         return ResponseEntity.ok(reserverService.countByVoitureAndPayment(idvoit, payment));
     }

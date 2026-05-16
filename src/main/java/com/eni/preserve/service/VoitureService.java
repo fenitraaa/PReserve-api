@@ -8,6 +8,7 @@ import com.eni.preserve.exception.BusinessException;
 import com.eni.preserve.mapper.VoitureMapper;
 import com.eni.preserve.repository.PlaceRepository;
 import com.eni.preserve.repository.VoitureRepository;
+import com.eni.preserve.util.IdGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,15 +23,18 @@ public class VoitureService {
     private final VoitureRepository voitureRepository;
     private final VoitureMapper voitureMapper;
     private final PlaceRepository placeRepository;
+    private final IdGenerator idGenerator;
 
     @Transactional
     public VoitureDTO create(VoitureDTO dto) {
         if (dto.getNbrplace() <= 0) {
-            throw new RuntimeException("Nombre de places invalide");
+            throw new BusinessException("Nombre de places invalide");
         }
 
         Voiture voiture = voitureMapper.toEntity(dto);
+        voiture.setIdvoit(idGenerator.generateVoitureId());
         Voiture saved = voitureRepository.save(voiture);
+
         for (int i = 1; i <= saved.getNbrplace(); i++) {
             Place place = new Place();
             place.setId(new PlaceId(saved.getIdvoit(), i));
@@ -49,26 +53,21 @@ public class VoitureService {
                 .collect(Collectors.toList());
     }
 
-    public VoitureDTO findById(Long id) {
-        Voiture v = voitureRepository.findById(id)
-                    .orElseThrow(() -> new BusinessException("Voiture introuvable"));
-
-        return voitureMapper.toDTO(v);
+    public VoitureDTO findById(String id) {
+        return voitureMapper.toDTO(voitureRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Voiture introuvable")));
     }
 
-    public VoitureDTO update(Long id, VoitureDTO dto) {
+    public VoitureDTO update(String id, VoitureDTO dto) {
         Voiture existing = voitureRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Voiture introuvable"));
-
         voitureMapper.updateEntity(existing, dto);
-        Voiture updated = voitureRepository.save(existing);
-        return voitureMapper.toDTO(updated);
+        return voitureMapper.toDTO(voitureRepository.save(existing));
     }
 
-    public int getPlacesLibres(Long id) {
+    public int getPlacesLibres(String id) {
         Voiture v = voitureRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Voiture introuvable"));
-
         return placeRepository.findByVoitureAndOccupation(v, false).size();
     }
 }

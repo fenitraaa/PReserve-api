@@ -1,10 +1,13 @@
 package com.eni.preserve.dto;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ClientDTO {
-    private int idcli;
+    private String idcli;
     private String nom;
     private String numtel;
 }

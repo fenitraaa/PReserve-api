@@ -8,10 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tools.jackson.databind.ObjectMapper;
-import org.springframework.http.MediaType;
 
 import java.util.List;
 
@@ -39,7 +39,9 @@ class ClientControllerTest {
     void init() {
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         objectMapper = new ObjectMapper();
+
         dto = new ClientDTO();
+        dto.setIdcli("C001");
         dto.setNom("Fenitra");
         dto.setNumtel("0345351885");
     }
@@ -47,18 +49,21 @@ class ClientControllerTest {
     @Test
     void testCreate() throws Exception {
         when(service.create(any(ClientDTO.class))).thenReturn(dto);
+
         mockMvc.perform(post("/api/clients")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nom").value("Fenitra"))
                 .andExpect(jsonPath("$.numtel").value("0345351885"));
+
         verify(service).create(any(ClientDTO.class));
     }
 
     @Test
     void testFindAll() throws Exception {
         when(service.findAll()).thenReturn(List.of(dto));
+
         mockMvc.perform(get("/api/clients"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
@@ -68,6 +73,7 @@ class ClientControllerTest {
     @Test
     void testFindAllEmpty() throws Exception {
         when(service.findAll()).thenReturn(List.of());
+
         mockMvc.perform(get("/api/clients"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
@@ -75,8 +81,9 @@ class ClientControllerTest {
 
     @Test
     void testFindById() throws Exception {
-        when(service.findById(1)).thenReturn(dto);
-        mockMvc.perform(get("/api/clients/1"))
+        when(service.findById("C001")).thenReturn(dto);
+
+        mockMvc.perform(get("/api/clients/C001"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nom").value("Fenitra"))
                 .andExpect(jsonPath("$.numtel").value("0345351885"));
@@ -84,35 +91,40 @@ class ClientControllerTest {
 
     @Test
     void testFindByIdFail() {
-        when(service.findById(99)).thenThrow(new RuntimeException("Client introuvable"));
+        when(service.findById("C999")).thenThrow(new RuntimeException("Client introuvable"));
+
         org.junit.jupiter.api.Assertions.assertThrows(
             Exception.class,
-            () -> mockMvc.perform(get("/api/clients/99"))
+            () -> mockMvc.perform(get("/api/clients/C999"))
         );
     }
-    
+
     @Test
     void testUpdate() throws Exception {
         ClientDTO newDto = new ClientDTO();
         newDto.setNom("Tojo");
         newDto.setNumtel("0330551248");
-        when(service.update(eq(1), any(ClientDTO.class))).thenReturn(newDto);
-        mockMvc.perform(put("/api/clients/1")
+
+        when(service.update(eq("C001"), any(ClientDTO.class))).thenReturn(newDto);
+
+        mockMvc.perform(put("/api/clients/C001")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nom").value("Tojo"))
                 .andExpect(jsonPath("$.numtel").value("0330551248"));
-        verify(service).update(eq(1), any(ClientDTO.class));
+
+        verify(service).update(eq("C001"), any(ClientDTO.class));
     }
 
     @Test
     void testUpdateFail() {
-        when(service.update(eq(99), any(ClientDTO.class)))
+        when(service.update(eq("C999"), any(ClientDTO.class)))
                 .thenThrow(new RuntimeException("Client introuvable"));
+
         org.junit.jupiter.api.Assertions.assertThrows(
             Exception.class,
-            () -> mockMvc.perform(put("/api/clients/99")
+            () -> mockMvc.perform(put("/api/clients/C999")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(dto)))
         );
@@ -121,6 +133,7 @@ class ClientControllerTest {
     @Test
     void testSearch() throws Exception {
         when(service.recherche("Fen")).thenReturn(List.of(dto));
+
         mockMvc.perform(get("/api/clients/recherche")
                         .param("q", "Fen"))
                 .andExpect(status().isOk())
@@ -131,6 +144,7 @@ class ClientControllerTest {
     @Test
     void testSearchEmpty() throws Exception {
         when(service.recherche("XYZ")).thenReturn(List.of());
+
         mockMvc.perform(get("/api/clients/recherche")
                         .param("q", "XYZ"))
                 .andExpect(status().isOk())

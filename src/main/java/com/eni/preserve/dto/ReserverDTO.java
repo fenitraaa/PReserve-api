@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReserverDTO {
-    private Long idreserv;
-    private Long idvoit;
-    private Integer idcli;
+    private String idreserv;
+    private String idvoit;
+    private String idcli;
     private int place;
     private LocalDateTime dateReserv;
     private LocalDate dateVoyage;

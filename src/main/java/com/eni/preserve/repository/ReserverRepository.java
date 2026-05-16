@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ReserverRepository extends JpaRepository<Reserver, Long> {
+public interface ReserverRepository extends JpaRepository<Reserver, String> {
 
     List<Reserver> findByVoiture(Voiture voiture);
 
