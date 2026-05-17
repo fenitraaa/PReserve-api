@@ -121,6 +121,7 @@ jobs:
             --globals workspace.postman_globals.json \
             --reporters cli,html \
             --reporter-html-export ../rapport.html
+            ls -la ../rapport.html
   
       - name: Upload rapport
         uses: actions/upload-artifact@v4
