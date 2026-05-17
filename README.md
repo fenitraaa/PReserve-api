@@ -9,7 +9,7 @@ DB_PASSWORD= password
 ## Use Docker to launch the project
 
 ```sh
-Docker compose up
+docker compose up -d
 ```
 > It downloads automatically the image latest from GHRC
 ## Use Newman to test automatically all APIs 
@@ -20,8 +20,8 @@ sudo npm install -g newman newman-reporter-htmlextra
 ```
 Run this command
 ```
-newman run /postman/PReserve-API.postman_collection.json \
-        --globals workspace.postman_globals.json \
+newman run postman/PReserve-API.postman_collection.json \
+        --globals postman/workspace.postman_globals.json \
         --reporters cli,html \
         --reporter-html-export rapport.html
 ```
