@@ -1,5 +1,31 @@
-# Documentation API - Gestion de Réservation Coopérative (PReserve)
+# REST API for managing seat reservations in a cooperative transport system (PReserve)
 
+## Replace all environments variables within .env and deleting .exemple
+```
+DB_URL= your DB URL
+DB_USERNAME= username
+DB_PASSWORD= password
+```
+## Use Docker to launch the project
+
+```sh
+Docker compose up
+```
+> It downloads automatically the image latest from GHRC
+## Use Newman to test automatically all APIs 
+Install Newman if you don't have it
+```
+sudo npm install -g newman
+sudo npm install -g newman newman-reporter-htmlextra
+```
+Run this command
+```
+newman run /postman/PReserve-API.postman_collection.json \
+        --globals workspace.postman_globals.json \
+        --reporters cli,html \
+        --reporter-html-export rapport.html
+```
+## All APIs ENDPOINTS:
 **Base URL** : `http://localhost:8080`
 
 **Format** : JSON
@@ -8,26 +34,26 @@
 
 ---
 
-## Codes de réponse
+## Response Codes
 
 | Code | Description |
 |------|-------------|
-| 200  | Succès |
-| 400  | Erreur métier (place déjà occupée, données invalides) |
-| 404  | Ressource introuvable |
-| 500  | Erreur serveur |
+| 200  | Success |
+| 400  | Business error (seat already taken, invalid data) |
+| 404  | Resource not found |
+| 500  | Server error |
 
 ---
 
-## Voiture
+## Vehicle
 
-### Créer une voiture
+### Create a vehicle
 
 **POST** `/api/voitures`
 
-Les places sont créées automatiquement selon le nombre de places défini.
+Seats are automatically created based on the defined number of seats.
 
-Corps de la requête :
+Request body:
 ```json
 {
     "design": "Volkswagen Crafter",
@@ -37,42 +63,44 @@ Corps de la requête :
 }
 ```
 
-Valeurs possibles pour `type` : `SIMPLE`, `PREMIUM`, `VIP`
+Possible values for `type` : `SIMPLE`, `PREMIUM`, `VIP`
 
-Réponse :
+Response:
 ```json
 {
-    "idvoit": 1,
+    "idvoit": "V001",
     "design": "Volkswagen Crafter",
     "type": "PREMIUM",
     "nbrplace": 12,
     "frais": 50000
 }
 ```
+
+> After a successful POST, the `idvoit` is automatically stored in the collection variable `{{idvoit}}`.
 
 ---
 
-### Lister toutes les voitures
+### List all vehicles
 
 **GET** `/api/voitures`
 
-Aucun corps requis.
+No request body required.
 
 ---
 
-### Trouver une voiture par ID
+### Find a vehicle by ID
 
-**GET** `/api/voitures/{idvoit}`
+**GET** `/api/voitures/{{idvoit}}`
 
-Aucun corps requis.
+No request body required.
 
 ---
 
-### Modifier une voiture
+### Update a vehicle
 
-**PUT** `/api/voitures/{idvoit}`
+**PUT** `/api/voitures/{{idvoit}}`
 
-Corps de la requête :
+Request body:
 ```json
 {
     "design": "Volkswagen Crafter",
@@ -84,23 +112,23 @@ Corps de la requête :
 
 ---
 
-### Nombre de places libres
+### Number of available seats
 
-**GET** `/api/voitures/{idvoit}/places-libres`
+**GET** `/api/voitures/{{idvoit}}/places-libres`
 
-Aucun corps requis.
+No request body required.
 
-Réponse : nombre entier représentant les places disponibles.
+Response: integer representing the number of available seats.
 
 ---
 
 ## Client
 
-### Créer un client
+### Create a client
 
 **POST** `/api/clients`
 
-Corps de la requête :
+Request body:
 ```json
 {
     "nom": "Andry",
@@ -108,38 +136,40 @@ Corps de la requête :
 }
 ```
 
-Réponse :
+Response:
 ```json
 {
-    "idcli": 1,
+    "idcli": "C001",
     "nom": "Andry",
     "numtel": "0335111821"
 }
 ```
+
+> After a successful POST, the `idcli` is automatically stored in the collection variable `{{idcli}}`.
 
 ---
 
-### Lister tous les clients
+### List all clients
 
 **GET** `/api/clients`
 
-Aucun corps requis.
+No request body required.
 
 ---
 
-### Trouver un client par ID
+### Find a client by ID
 
-**GET** `/api/clients/{idcli}`
+**GET** `/api/clients/{{idcli}}`
 
-Aucun corps requis.
+No request body required.
 
 ---
 
-### Modifier un client
+### Update a client
 
-**PUT** `/api/clients/{idcli}`
+**PUT** `/api/clients/{{idcli}}`
 
-Corps de la requête :
+Request body:
 ```json
 {
     "nom": "Tojo",
@@ -149,71 +179,67 @@ Corps de la requête :
 
 ---
 
-### Rechercher un client
+### Search for a client
 
-**GET** `/api/clients/recherche?q={mot}`
+**GET** `/api/clients/recherche?q={keyword}`
 
-Recherche par nom ou numéro de téléphone avec LIKE.
+Search by name or phone number using LIKE.
 
-Exemple : `/api/clients/recherche?q=And`
+Example: `/api/clients/recherche?q=Fen`
 
-Aucun corps requis.
+No request body required.
 
 ---
 
-## Place
+## Seat
 
-### Lister toutes les places
+### List all seats
 
 **GET** `/api/places`
 
-Aucun corps requis.
+No request body required.
 
 ---
 
-### Lister les places d'une voiture
+### List seats of a vehicle
 
-**GET** `/api/places/{idvoit}`
+**GET** `/api/places/{{idvoit}}`
 
-Aucun corps requis.
+No request body required.
 
 ---
 
-### Lister toutes les places libres
+### List all available seats
 
 **GET** `/api/places/libres`
 
-Aucun corps requis.
+No request body required.
 
 ---
 
-### Lister toutes les places occupées
+### List all occupied seats
 
 **GET** `/api/places/occupees`
 
-Aucun corps requis.
+No request body required.
 
 ---
 
-### Occuper une place
+### Occupy a seat
 
-**PUT** `/api/places/{idvoit}/{numeroPlace}/occuper`
+**PUT** `/api/places/{{idvoit}}/{{numeroPlace}}/occuper`
 
-Aucun corps requis.
+No request body required.
 
-Erreurs possibles :
+Possible errors:
 - `400` : Place déjà occupée
 - `404` : Place introuvable ou voiture introuvable
 
----
+**PUT** `/api/places/{{idvoit}}/{{numeroPlace}}/liberer`
 
-### Libérer une place
+No request body required.
 
-**PUT** `/api/places/{idvoit}/{numeroPlace}/liberer`
-
-Aucun corps requis.
-
-Erreurs possibles :
+Possible errors:
 - `400` : Place déjà libre
 - `404` : Place introuvable ou voiture introuvable
 
@@ -221,17 +247,17 @@ Erreurs possibles :
 
 ## Reservation
 
-### Créer une réservation
+### Create a reservation — AVEC_AVANCE
 
 **POST** `/api/reservations`
 
-La date de réservation est générée automatiquement. La place est marquée comme occupée automatiquement.
+The reservation date is automatically generated. The seat is automatically marked as occupied.
 
-Corps de la requête :
+Request body:
 ```json
 {
-    "idvoit": 1,
-    "idcli": 1,
+    "idvoit": "{{idvoit}}",
+    "idcli": "{{idcli}}",
     "place": 1,
     "dateVoyage": "2026-05-25",
     "payment": "AVEC_AVANCE",
@@ -239,14 +265,50 @@ Corps de la requête :
 }
 ```
 
-Valeurs possibles pour `payment` : `SANS_AVANCE`, `AVEC_AVANCE`, `TOUT_PAYE`
+---
 
-Réponse :
+### Create a reservation — SANS_AVANCE
+
+**POST** `/api/reservations`
+
+Request body:
 ```json
 {
-    "idreserv": 1,
-    "idvoit": 1,
-    "idcli": 1,
+    "idvoit": "{{idvoit}}",
+    "idcli": "{{idcli}}",
+    "place": 2,
+    "dateVoyage": "2026-05-25",
+    "payment": "SANS_AVANCE",
+    "montantAvance": 0
+}
+```
+
+---
+
+### Create a reservation — TOUT_PAYE
+
+**POST** `/api/reservations`
+
+Request body:
+```json
+{
+    "idvoit": "{{idvoit}}",
+    "idcli": "{{idcli}}",
+    "place": 3,
+    "dateVoyage": "2026-05-25",
+    "payment": "TOUT_PAYE",
+    "montantAvance": 55000
+}
+```
+
+Possible values for `payment` : `SANS_AVANCE`, `AVEC_AVANCE`, `TOUT_PAYE`
+
+Response:
+```json
+{
+    "idreserv": "R001",
+    "idvoit": "V001",
+    "idcli": "C001",
     "place": 1,
     "dateReserv": "2026-05-15T10:00:00",
     "dateVoyage": "2026-05-25",
@@ -255,104 +317,167 @@ Réponse :
 }
 ```
 
-Erreurs possibles :
+Possible errors:
 - `400` : Place déjà occupée
 - `404` : Voiture introuvable, client introuvable, place introuvable
 
+> After a successful POST, the `idreserv` is automatically stored in the collection variable `{{idreserv}}`.
+
 ---
 
-### Lister toutes les réservations
+### List all reservations
 
 **GET** `/api/reservations`
 
-Aucun corps requis.
+No request body required.
 
 ---
 
-### Trouver une réservation par ID
+### Find a reservation by ID
 
-**GET** `/api/reservations/{idreserv}`
+**GET** `/api/reservations/{{idreserv}}`
 
-Aucun corps requis.
+No request body required.
 
 ---
 
-### Modifier une réservation
+### Update a reservation
 
-**PUT** `/api/reservations/{idreserv}`
+**PUT** `/api/reservations/{{idreserv}}`
 
-Corps de la requête :
+Request body:
 ```json
 {
     "place": 3,
-    "dateVoyage": "2026-05-25",
-    "payment": "SANS_AVANCE",
-    "montantAvance": 0
+    "dateVoyage": "2026-06-01",
+    "payment": "TOUT_PAYE",
+    "montantAvance": 55000
 }
 ```
 
-La date de réservation originale est conservée automatiquement.
+The original reservation date is automatically preserved.
 
 ---
 
-### Réservations par voiture
+### Reservations by vehicle
 
-**GET** `/api/reservations/voiture/{idvoit}`
+**GET** `/api/reservations/voiture/{{idvoit}}`
 
-Aucun corps requis.
-
----
-
-### Réservations par type de paiement
-
-**GET** `/api/reservations/payment/{payment}`
-
-Valeurs possibles : `SANS_AVANCE`, `AVEC_AVANCE`, `TOUT_PAYE`
-
-Exemple : `/api/reservations/payment/AVEC_AVANCE`
-
-Aucun corps requis.
+No request body required.
 
 ---
 
-### Réservations par voiture et type de paiement
+### Reservations by payment type — SANS_AVANCE
 
-**GET** `/api/reservations/voiture/{idvoit}/payment/{payment}`
+**GET** `/api/reservations/payment/SANS_AVANCE`
 
-Exemple : `/api/reservations/voiture/1/payment/TOUT_PAYE`
-
-Aucun corps requis.
+No request body required.
 
 ---
 
-### Nombre de réservations par voiture et type de paiement
+### Reservations by payment type — AVEC_AVANCE
 
-**GET** `/api/reservations/voiture/{idvoit}/payment/{payment}/count`
+**GET** `/api/reservations/payment/AVEC_AVANCE`
 
-Exemple : `/api/reservations/voiture/1/payment/SANS_AVANCE/count`
-
-Aucun corps requis.
-
-Réponse : nombre entier.
+No request body required.
 
 ---
 
-### Recette totale
+### Reservations by payment type — TOUT_PAYE
+
+**GET** `/api/reservations/payment/TOUT_PAYE`
+
+No request body required.
+
+---
+
+### Reservations by vehicle and payment type — SANS_AVANCE
+
+**GET** `/api/reservations/voiture/{{idvoit}}/payment/SANS_AVANCE`
+
+No request body required.
+
+---
+
+### Reservations by vehicle and payment type — AVEC_AVANCE
+
+**GET** `/api/reservations/voiture/{{idvoit}}/payment/AVEC_AVANCE`
+
+No request body required.
+
+---
+
+### Reservations by vehicle and payment type — TOUT_PAYE
+
+**GET** `/api/reservations/voiture/{{idvoit}}/payment/TOUT_PAYE`
+
+No request body required.
+
+---
+
+### Count reservations by vehicle and payment type — SANS_AVANCE
+
+**GET** `/api/reservations/voiture/{{idvoit}}/payment/SANS_AVANCE/count`
+
+No request body required.
+
+Response: integer.
+
+---
+
+### Count reservations by vehicle and payment type — AVEC_AVANCE
+
+**GET** `/api/reservations/voiture/{{idvoit}}/payment/AVEC_AVANCE/count`
+
+No request body required.
+
+Response: integer.
+
+---
+
+### Count reservations by vehicle and payment type — TOUT_PAYE
+
+**GET** `/api/reservations/voiture/{{idvoit}}/payment/TOUT_PAYE/count`
+
+No request body required.
+
+Response: integer.
+
+---
+
+### Total revenue
 
 **GET** `/api/reservations/recette`
 
-Aucun corps requis.
+No request body required.
 
-Réponse : montant total.
+Response: total amount.
 
 ---
 
-## Variables de collection Postman
+## PDF
 
-| Variable | Description | Exemple |
-|----------|-------------|---------|
-| `spring_url` | URL de base du serveur | `http://localhost:8080` |
-| `idvoit` | ID de la voiture (stocke automatiquement apres POST) | `1` |
-| `idcli` | ID du client (stocke automatiquement apres POST) | `1` |
-| `idreserv` | ID de la reservation (stocke automatiquement apres POST) | `1` |
-| `numeroPlace` | Numero de la place | `1` |
+### Generate receipt
+
+**GET** `/api/pdf/recu/{{idreserv}}`
+
+Headers:
+```
+Accept: application/pdf
+```
+
+No request body required.
+
+Response: PDF file of the reservation receipt.
+
+---
+
+## Postman Collection Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------------|
+| `spring_url` | Base server URL | `http://localhost:8080` |
+| `idvoit` | Vehicle ID (auto-stored after POST vehicle) | `V001` |
+| `idcli` | Client ID (auto-stored after POST client) | `C001` |
+| `idreserv` | Reservation ID (auto-stored after POST reservation) | `R001` |
+| `numeroPlace` | Seat number | `3` |
