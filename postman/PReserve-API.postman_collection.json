@@ -662,6 +662,32 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "GeneratePDF",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/pdf",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{spring_url}}/api/pdf/recu/{{idreserv}}",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"pdf",
+								"recu",
+								"{{idreserv}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
