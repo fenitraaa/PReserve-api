@@ -113,6 +113,12 @@ jobs:
             fi
             sleep 5
           done
+      
+      - name: Install Newman
+        run: |
+          npm install -g newman newman-reporter-htmlextra
+          newman --version
+          npm list -g newman-reporter-htmlextra
           
       - name: Run Newman tests
         run: |
