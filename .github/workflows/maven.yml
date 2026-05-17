@@ -120,7 +120,7 @@ jobs:
           newman run PReserve-API.postman_collection.json \
             --globals workspace.postman_globals.json \
             --reporters cli,html \
-            --reporter-html-export ../rapport.html
+            --reporter-htmlextra-export ../rapport.html
             ls -la ../rapport.html
   
       - name: Upload rapport
