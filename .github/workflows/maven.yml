@@ -120,13 +120,13 @@ jobs:
           newman run PReserve-API.postman_collection.json \
             --globals workspace.postman_globals.json \
             --reporters cli,html \
-            --reporter-html-export rapport.html
+            --reporter-html-export $GITHUB_WORKSPACE/rapport.html
   
       - name: Upload rapport
         uses: actions/upload-artifact@v4
         with:
           name: newman-rapport
-          path: postman/rapport.html
+          path: rapport.html
             
       - name: Stop services
         if: always()
