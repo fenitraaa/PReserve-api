@@ -113,14 +113,20 @@ jobs:
             fi
             sleep 5
           done
+      
+      - name: Install Newman
+        run: |
+          npm install -g newman newman-reporter-htmlextra
+          newman --version
+          npm list -g newman-reporter-htmlextra
           
       - name: Run Newman tests
         run: |
-          cd postman/
-          newman run PReserve-API.postman_collection.json \
-            --globals workspace.postman_globals.json \
-            --reporters cli,html \
-            --reporter-html-export rapport.html
+          newman run postman/PReserve-API.postman_collection.json \
+            --globals postman/workspace.postman_globals.json \
+            --reporters cli,htmlextra \
+            --reporter-htmlextra-export rapport.html
+          ls -la rapport.html
   
       - name: Upload rapport
         uses: actions/upload-artifact@v4

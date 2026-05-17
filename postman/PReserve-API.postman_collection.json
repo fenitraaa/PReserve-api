@@ -662,6 +662,32 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "GeneratePDF",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/pdf",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{spring_url}}/api/pdf/recu/{{idreserv}}",
+							"host": [
+								"{{spring_url}}"
+							],
+							"path": [
+								"api",
+								"pdf",
+								"recu",
+								"{{idreserv}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -791,7 +817,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"place\": 3,\n    \"dateVoyage\": \"2026-05-25\",\n    \"payment\": \"SANS_AVANCE\",\n    \"montantAvance\": 0\n}",
+							"raw": "{\n    \"place\": 3,\n    \"dateVoyage\": \"2026-06-01\",\n    \"payment\": \"TOUT_PAYE\",\n    \"montantAvance\": 55000\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -854,7 +880,7 @@
 		},
 		{
 			"key": "numeroPlace",
-			"value": ""
+			"value": "3"
 		}
 	]
 }
