@@ -121,6 +121,7 @@ jobs:
             --globals workspace.postman_globals.json \
             --reporters cli,html \
             --reporter-html-export $GITHUB_WORKSPACE/rapport.html
+            ls -la $WORKSPACE/rapport.html
   
       - name: Upload rapport
         uses: actions/upload-artifact@v4
