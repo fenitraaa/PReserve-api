@@ -13,26 +13,29 @@ import com.eni.preserve.repository.ClientRepository;
 import com.eni.preserve.repository.PlaceRepository;
 import com.eni.preserve.repository.ReserverRepository;
 import com.eni.preserve.repository.VoitureRepository;
+import com.eni.preserve.util.IdGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.eni.preserve.util.IdGenerator;
 
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReserverService {
 
     private final ReserverRepository reserverRepository;
-    private final ReserverMapper reserverMapper;
-    private final VoitureRepository voitureRepository;
-    private final ClientRepository clientRepository;
-    private final PlaceRepository placeRepository;
-    private final IdGenerator idGenerator;
+    private final ReserverMapper     reserverMapper;
+    private final VoitureRepository  voitureRepository;
+    private final ClientRepository   clientRepository;
+    private final PlaceRepository    placeRepository;
+    private final IdGenerator        idGenerator;
 
-        public ReserverDTO create(ReserverDTO dto) {
+    public ReserverDTO create(ReserverDTO dto) {
+
         Voiture voiture = voitureRepository.findById(dto.getIdvoit())
                 .orElseThrow(() -> new BusinessException("Voiture introuvable"));
 
@@ -44,7 +47,7 @@ public class ReserverService {
                 .orElseThrow(() -> new BusinessException("Place introuvable"));
 
         if (place.isOccupation()) {
-                throw new BusinessException("Place déjà occupée");
+            throw new BusinessException("Place déjà occupée");
         }
 
         dto.setDateReserv(LocalDateTime.now());
@@ -58,7 +61,7 @@ public class ReserverService {
         placeRepository.save(place);
 
         return reserverMapper.toDTO(saved);
-        }
+    }
 
     public List<ReserverDTO> findAll() {
         return reserverRepository.findAll()
@@ -74,10 +77,34 @@ public class ReserverService {
     }
 
     public ReserverDTO update(String id, ReserverDTO dto) {
+
         Reserver existing = reserverRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Réservation introuvable"));
+
+        int anciennePlace = existing.getPlace();
+        int nouvellePlace = dto.getPlace();
+
+        if (anciennePlace != nouvellePlace) {
+
+            Place placeAncienne = placeRepository
+                    .findByVoitureAndIdPlace(existing.getVoiture(), anciennePlace)
+                    .orElseThrow(() -> new BusinessException("Ancienne place introuvable"));
+            placeAncienne.setOccupation(false);
+            placeRepository.save(placeAncienne);
+
+            Place placeNouvelle = placeRepository
+                    .findByVoitureAndIdPlace(existing.getVoiture(), nouvellePlace)
+                    .orElseThrow(() -> new BusinessException("Nouvelle place introuvable"));
+
+            if (placeNouvelle.isOccupation()) {
+                throw new BusinessException("La nouvelle place est déjà occupée");
+            }
+
+            placeNouvelle.setOccupation(true);
+            placeRepository.save(placeNouvelle);
+        }
+
         reserverMapper.updateEntity(existing, dto);
-        existing.setDateReserv(existing.getDateReserv());
         Reserver updated = reserverRepository.save(existing);
         return reserverMapper.toDTO(updated);
     }
