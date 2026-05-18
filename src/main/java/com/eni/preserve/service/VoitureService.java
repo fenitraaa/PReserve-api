@@ -58,12 +58,36 @@ public class VoitureService {
                 .orElseThrow(() -> new BusinessException("Voiture introuvable")));
     }
 
-    public VoitureDTO update(String id, VoitureDTO dto) {
-        Voiture existing = voitureRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Voiture introuvable"));
-        voitureMapper.updateEntity(existing, dto);
-        return voitureMapper.toDTO(voitureRepository.save(existing));
+@Transactional
+public VoitureDTO update(String id, VoitureDTO dto) {
+    Voiture existing = voitureRepository.findById(id)
+            .orElseThrow(() -> new BusinessException("Voiture introuvable"));
+
+    int ancienNbrPlace = existing.getNbrplace();
+    int nouveauNbrPlace = dto.getNbrplace();
+
+    voitureMapper.updateEntity(existing, dto);
+    Voiture updated = voitureRepository.save(existing);
+
+    if (nouveauNbrPlace > ancienNbrPlace) {
+        for (int i = ancienNbrPlace + 1; i <= nouveauNbrPlace; i++) {
+            Place place = new Place();
+            place.setId(new PlaceId(updated.getIdvoit(), i));
+            place.setVoiture(updated);
+            place.setOccupation(false);
+            placeRepository.save(place);
+        }
     }
+
+    if (nouveauNbrPlace < ancienNbrPlace) {
+        for (int i = nouveauNbrPlace + 1; i <= ancienNbrPlace; i++) {
+            PlaceId placeId = new PlaceId(updated.getIdvoit(), i);
+            placeRepository.deleteById(placeId);
+        }
+    }
+
+    return voitureMapper.toDTO(updated);
+}
 
     public int getPlacesLibres(String id) {
         Voiture v = voitureRepository.findById(id)
