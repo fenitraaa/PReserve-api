@@ -82,6 +82,15 @@ public VoitureDTO update(String id, VoitureDTO dto) {
     if (nouveauNbrPlace < ancienNbrPlace) {
         for (int i = nouveauNbrPlace + 1; i <= ancienNbrPlace; i++) {
             PlaceId placeId = new PlaceId(updated.getIdvoit(), i);
+            Place place = placeRepository.findById(placeId)
+                    .orElse(null);
+
+            if (place != null && place.isOccupation()) {
+                throw new BusinessException(
+                    "Impossible de réduire les places — la place " + i + " est occupée"
+                );
+            }
+
             placeRepository.deleteById(placeId);
         }
     }
