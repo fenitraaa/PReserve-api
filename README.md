@@ -259,7 +259,7 @@ Request body:
     "idvoit": "{{idvoit}}",
     "idcli": "{{idcli}}",
     "place": 1,
-    "dateVoyage": "2026-05-25",
+    "dateVoyage": "2026-05-25 09:00:00",
     "payment": "AVEC_AVANCE",
     "montantAvance": 5000
 }
@@ -277,7 +277,7 @@ Request body:
     "idvoit": "{{idvoit}}",
     "idcli": "{{idcli}}",
     "place": 2,
-    "dateVoyage": "2026-05-25",
+    "dateVoyage": "2026-05-25 09:00:00",
     "payment": "SANS_AVANCE",
     "montantAvance": 0
 }
@@ -295,7 +295,7 @@ Request body:
     "idvoit": "{{idvoit}}",
     "idcli": "{{idcli}}",
     "place": 3,
-    "dateVoyage": "2026-05-25",
+    "dateVoyage": "2026-05-25 09:00:00",
     "payment": "TOUT_PAYE",
     "montantAvance": 55000
 }
@@ -310,8 +310,8 @@ Response:
     "idvoit": "V001",
     "idcli": "C001",
     "place": 1,
-    "dateReserv": "2026-05-15T10:00:00",
-    "dateVoyage": "2026-05-25",
+    "dateReserv": "2026-05-15 10:00:00",
+    "dateVoyage": "2026-05-25 09:00:00",
     "payment": "AVEC_AVANCE",
     "montantAvance": 5000
 }

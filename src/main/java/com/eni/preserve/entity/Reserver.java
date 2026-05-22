@@ -32,12 +32,13 @@ public class Reserver {
     @Column(name = "place", nullable = false)
     private int place;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @Column(name = "date_reserv", nullable = false)
     private LocalDateTime dateReserv;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @Column(name = "date_voyage", nullable = false)
-    private LocalDate dateVoyage;
+    private LocalDateTime dateVoyage;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment", nullable = false)
