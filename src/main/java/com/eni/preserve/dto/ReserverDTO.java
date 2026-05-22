@@ -1,6 +1,7 @@
 package com.eni.preserve.dto;
 
 import com.eni.preserve.enums.TypePaiement;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -15,8 +16,10 @@ public class ReserverDTO {
     private String idvoit;
     private String idcli;
     private int place;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime dateReserv;
-    private LocalDate dateVoyage;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime dateVoyage;
     private TypePaiement payment;
     private int montantAvance;
 }

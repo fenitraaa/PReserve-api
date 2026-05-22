@@ -1,0 +1,3 @@
+-- Convert date_voyage from DATE to TIMESTAMP
+ALTER TABLE reserver 
+ALTER COLUMN date_voyage TYPE TIMESTAMP USING date_voyage::TIMESTAMP;
