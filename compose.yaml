@@ -13,7 +13,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   app:
-    image: ghcr.io/fenitraaa/preserve-api:latest
+    image: ghcr.io/fenitraaa/preserve-api:v2
     container_name: preserve_app
     depends_on:
       - db
